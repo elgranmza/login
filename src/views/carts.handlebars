@@ -1,0 +1,20 @@
+<div>
+    <div>
+        <p>Carritos:</p>
+    </div>
+    <div>
+
+        <ul style="list-style-type: none">
+            {{#each carts}}
+            <hr>
+            <li>Carrito id: {{_id}}</li>
+                {{#each products}}
+                <li>Producto id: {{product}}</li>
+                <li>Cantidad {{quantity}}</li>
+                {{/each}}
+            
+            {{/each}}
+        </ul>
+
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<div>
+    <div>
+        <p>Agregá nuevos productos:</p>
+    </div>
+    <form action="/api/products" enctype="multipart/form-data" method="post">
+        <input name="title" placeholder="title">
+        <input name="description" placeholder="description">
+        <input name="price" placeholder="price">
+        <input name="code" placeholder="code">
+        <input name="stock" placeholder="stock">
+        <input type="file" name="thumbnail" id="thumbnail">
+        <input type="submit" value="Enviar">
+    </form>
+    <div>
+        <p>Productos agregados hasta el momento:</p>
+    </div>
+    <div>
+
+        <ul style="list-style-type: none">
+            {{#each products}}
+            <hr>
+            <li>{{title}} {{price}} {{_id}}</li>
+            <li><img src="{{thumbnail}}" alt="" height="100px"></li>
+            {{/each}}
+        </ul>
+
+    </div>
+</div>
