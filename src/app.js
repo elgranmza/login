@@ -10,17 +10,13 @@ import {Server} from "socket.io"
 
 import messagesModel from "./dao/models/messages.model.js";
 
-//import productsModel from "./dao/models/products.model.js"
-//import productCarga from "./files/bd.js"
-
 const PORT = 8080;
 const app = express();
 
-const MONGO = "mongodb+srv://davidgomezarg:9$PqEtLt7hw7KVx@codercluster.xu3gigw.mongodb.net/ecommerce"
+const MONGO = "mongodb+srv://elgranmza:mGUlbTxmcEKrrSYs@codercluster.vkyyzkg.mongodb.net/ecommerce"
 const connection = mongoose.connect(MONGO);
 
-//const resultCarga = await productsModel.insertMany(productCarga)
-//console.log(resultCarga)
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
