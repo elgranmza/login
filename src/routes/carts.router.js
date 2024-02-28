@@ -1,14 +1,14 @@
-import { Router } from "express"
-import { uploader } from "../utils.js";
-import cartsModel from "../dao/models/carts.model.js";
-import cartManagerMongoDB from "../dao/managers/CartManagerMongoDB.js";
+import {Router} from "express"
+import CartManagerDB from "../dao/dbManagers/CartManagerDB.js";
 
 
 const router = Router();
 
+const cartManagerMongo = new CartManagerDB();
 
-router.get("/", async (req, res) => {
-    const carts = await cartsModel.find()
+
+router.get("/",async(req,res)=>{
+    const carts = await cartManagerMongo.getCarts();
     res.send({
         status: "success",
         message: carts
@@ -16,9 +16,9 @@ router.get("/", async (req, res) => {
 })
 
 //Se listara los productos de un carrito en especifico
-router.get("/:cid", async (req, res) => {
-    const cid = req.params.cid;
-    const cart = await cartsModel.find({ _id: cid });
+router.get("/:cid",async(req,res)=>{
+    const cid= req.params.cid;
+    const cart = await cartManagerMongo.getCartsByID(cid);
     res.send({
         status: "success",
         message: cart
@@ -27,10 +27,9 @@ router.get("/:cid", async (req, res) => {
 })
 
 //Se creará un nuevo carrito
-router.post("/", async (req, res) => {
+router.post("/",async(req,res)=>{
 
-    const products = [{}]
-    const result = await cartsModel.create(products);
+    const result = await cartManagerMongo.createCart();
 
     res.send({
         status: "success",
@@ -39,27 +38,73 @@ router.post("/", async (req, res) => {
 
 })
 
-router.post('/:cid/product/:pid', async (req, res) => {
+//Se agregará un producto a un carrito existente.
+router.post('/:cid/product/:pid', async (req,res)=>{
 
-    const cid = req.params.cid;
-    const pid = req.params.pid;
+    const cid= req.params.cid;
+    const pid= req.params.pid;
+    //const quantity=req.params.quantity;
+    const quantity= 1
 
-    //ver si existe el cart
-    const cart = await cartsModel.find({ _id: cid })
-
-    if (cart.length == 0) {
-        return res.send({
-            error: 'Carrito no encontrado.'
-        })
-    }
-
-    let productsUpdate = cartManagerMongoDB(cart, pid);
-    const result = await cartsModel.updateOne({ _id: cid }, { $set: { products: productsUpdate } });
+    const result = await cartManagerMongo.addProductInCart(cid,pid,quantity)
 
     res.send({
-        status: "success",
-        message: result
+         status: "success",
+         message: result
     })
 })
+
+router.delete('/:cid/product/:pid', async (req,res)=>{
+
+    const cid= req.params.cid;
+    const pid= req.params.pid;
+
+    const result = await cartManagerMongo.deleteProductInCart(cid,pid)
+
+    res.send({
+         status: "success",
+         message: result
+    })
+})
+
+router.put('/:cid', async (req,res)=>{
+
+    const cid= req.params.cid;
+    const products=req.body;// products es un array de productos
+
+    const result = await cartManagerMongo.updateCart(cid,products)
+
+    res.send({
+         status: "success",
+         message: result
+    })
+})
+
+router.put('/:cid/product/:pid', async (req,res)=>{
+
+    const cid= req.params.cid;
+    const pid= req.params.pid;
+    const quantity=req.body.quantity;
+
+    const result = await cartManagerMongo.updateQualityProduct(cid,pid,quantity)
+
+    res.send({
+         status: "success",
+         message: result
+    })
+})
+
+router.delete('/:cid', async (req,res)=>{
+
+    const cid= req.params.cid;
+
+    const result = await cartManagerMongo.deleteAllProductsInCart(cid)
+
+    res.send({
+         status: "success",
+         message: result
+    })
+})
+
 
 export default router
