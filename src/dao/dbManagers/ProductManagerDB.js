@@ -1,43 +1,43 @@
 import productsModel from "../models/products.model.js";
 
-class ProductManagerDB{
+class ProductManagerDB {
 
-    getProducts = async(filter,options)=>{
+    getProducts = async (filter, options) => {
         const products = await productsModel.paginate(
             filter,
             options
         );
-        
+
         return {
             status: "success",
             msg: products
         };
-    } 
+    }
 
-    getProductByID = async(pid)=>{
-        const product = await productsModel.find({_id:pid});
+    getProductByID = async (pid) => {
+        const product = await productsModel.find({ _id: pid });
         return {
             status: "success",
             msg: product
         };
-    } 
+    }
 
-    createProduct = async(title,category,description,price,code,stock,filename)=>{
+    createProduct = async (title, category, description, price, code, stock, filename) => {
 
-        if(!title||!category||!description||!price||!code||!stock||!filename){
+        if (!title || !category || !description || !price || !code || !stock || !filename) {
             return {
                 status: "error",
                 message: "valores incompletos"
             }
         }
-    
-        const product ={
+
+        const product = {
             title,
             description,
             price,
             code,
             stock,
-            thumbnail:`http://localhost:8080/images/${filename}`
+            thumbnail: `http://localhost:8080/images/${filename}`
         }
 
         const result = await productsModel.create(product)
@@ -45,12 +45,12 @@ class ProductManagerDB{
 
     }
 
-    deleteProduct = async(pid)=>{
-        const result= await productsModel.deleteOne({_id:pid});
+    deleteProduct = async (pid) => {
+        const result = await productsModel.deleteOne({ _id: pid });
         return result
-    } 
+    }
 
-    updateProduct = async(pid,title,category,description,price,code,stock)=>{
+    updateProduct = async (pid, title, category, description, price, code, stock) => {
 
         const updateProduct = {
             title,
@@ -61,11 +61,11 @@ class ProductManagerDB{
             stock
             // thumbnail:`http://localhost:8080/images/${filename}`
         }
-    
-        const result= await productsModel.updateOne({_id:pid},{$set:updateProduct});
+
+        const result = await productsModel.updateOne({ _id: pid }, { $set: updateProduct });
         return result
-     } 
-    
+    }
+
 
 
 }

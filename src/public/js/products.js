@@ -1,38 +1,37 @@
-//Aca hay un problema. Cada vez que se avanza en la paginacion, se vuelve a cargar el scrip y se crea un nuevo carrito.
+let carritoId;
 
-const crearCarrito = ()=>{
+const crearCarrito = () => {
+    const endpoint = `http://localhost:8080/api/carts`;
 
-    const endpoint =`http://localhost:8080/api/carts`;
-
-    fetch(endpoint,{
-        method:"POST"
+    fetch(endpoint, {
+        method: "POST"
     })
-    .then((resp)=>resp.json())
-    .then((data)=>{
-        console.log("Estamos dentro de crear carrito: ",data.message._id)
+    .then((resp) => resp.json())
+    .then((data) => {
+        carritoId = data.message._id; // Almacenar el ID del carrito
+        console.log("Estamos dentro de crear carrito: ", carritoId);
 
+        
         const botonesCard = document.getElementsByName("btn");
-
         for (let boton of botonesCard) {
-            boton.addEventListener('click', (e)=> {
-                agregarCarrito(data.message._id,e.target.id); })
+            boton.addEventListener('click', (e) => {
+                agregarCarrito(carritoId, e.target.id);
+            });
         }
+    });
+}
+
+const agregarCarrito = (cid, pid) => {
+    const endpoint = `http://localhost:8080/api/carts/${cid}/product/${pid}`;
+    const data = {};
+
+    fetch(endpoint, {
+        method: "POST"
     })
-
+    .then((resp) => {
+        console.log(resp);
+    });
 }
 
-const agregarCarrito=(cid,pid)=>{
-    const endpoint =`http://localhost:8080/api/carts/${cid}/product/${pid}`;
-    const data= {}
-
-    fetch(endpoint,{
-        method:"POST"
-    }).then((resp)=>{console.log(resp)})
-
-}
-
-
-//Creamos carrito para obtener el "cid"
-//const cid= "658cbaa3b299fdafc649721c"
-crearCarrito()
-
+// Llamar a la función para crear el carrito una vez al cargar la página
+crearCarrito();
