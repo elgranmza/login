@@ -59,7 +59,6 @@ class ProductManagerDB {
             price,
             code,
             stock
-            // thumbnail:`http://localhost:8080/images/${filename}`
         }
 
         const result = await productsModel.updateOne({ _id: pid }, { $set: updateProduct });

@@ -12,16 +12,27 @@ router.get("/", async (req, res) => {
         const options = { limit: parseInt(limit), page: parseInt(page), sort: preSort, lean: true };
         const filter = category ? { category } : {};
         const products = await productManagerMongo.getProducts(filter, options);
-        
-        if (products.msg.hasPrevPage) {
-            products.msg.prevLink = `http://localhost:8080/api/products?limit=${limit}&page=${options.page - 1}`;
+//La respuesta del endpoint GET /api/products trae el formato con paginacion(posible correccion)
+        if (products.length > 0) {
+            const paginationInfo = {
+                docs: products,
+                totalDocs: products.length, 
+                limit: options.limit,
+                page: options.page,
+                totalPages: Math.ceil(products.length / options.limit),
+                hasPrevPage: options.page > 1,
+                hasNextPage: options.page < Math.ceil(products.length / options.limit)
+            };
+            if (paginationInfo.hasPrevPage) {
+                paginationInfo.prevLink = `http://localhost:8080/api/products?limit=${limit}&page=${options.page - 1}`;
+            }
+            if (paginationInfo.hasNextPage) {
+                paginationInfo.nextLink = `http://localhost:8080/api/products?limit=${limit}&page=${options.page + 1}`;
+            }
+            res.send(paginationInfo);
+        } else {
+            res.status(404).send({ status: "error", message: "No se encontraron productos" });
         }
-        
-        if (products.msg.hasNextPage) {
-            products.msg.nextLink = `http://localhost:8080/api/products?limit=${limit}&page=${options.page + 1}`;
-        }
-        
-        res.send({ status: "success", message: products });
     } catch (error) {
         console.error(error);
         res.status(500).send({ status: "error", message: "Internal server error" });

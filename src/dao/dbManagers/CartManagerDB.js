@@ -3,12 +3,12 @@ import productsModel from "../models/products.model.js";
 
 class CartManagerDB {
 
-    getCarts = async () => {
+    async getCarts() {
         try {
             const carts = await cartsModel.find().lean();
             return carts;
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return {
                 status: "error",
                 msg: "Error al obtener los carritos"
@@ -16,25 +16,31 @@ class CartManagerDB {
         }
     }
 
-    getCartsByID = async (cid) => {
+    async getCartsByID(cid) {
         try {
             const cart = await cartsModel.findOne({ _id: cid }).lean();
+            if (!cart) {
+                return {
+                    status: "error",
+                    msg: `El carrito con el id ${cid} no existe`
+                };
+            }
             return cart;
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return {
                 status: "error",
-                msg: `El carrito con el id ${cid} no existe`
+                msg: `Error al obtener el carrito con el id ${cid}`
             };
         }
     }
 
-    createCart = async () => {
+    async createCart() {
         try {
             const cart = await cartsModel.create({});
             return cart;
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return {
                 status: "error",
                 msg: "Error al crear el carrito"
@@ -42,7 +48,7 @@ class CartManagerDB {
         }
     }
 
-    addProductInCart = async (cid, pid, quantity) => {
+    async addProductInCart(cid, pid, quantity) {
         try {
             const cart = await cartsModel.findOne({ _id: cid });
             if (!cart) {
@@ -69,7 +75,7 @@ class CartManagerDB {
             await cart.save();
             return cart;
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return {
                 status: "error",
                 msg: "Error al agregar el producto al carrito"
@@ -77,7 +83,7 @@ class CartManagerDB {
         }
     }
 
-    deleteProductInCart = async (cid, pid) => {
+    async deleteProductInCart(cid, pid) {
         try {
             const cart = await cartsModel.findOne({ _id: cid });
             const index = cart.products.findIndex(e => e.product == pid);
@@ -95,7 +101,7 @@ class CartManagerDB {
                 };
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return {
                 status: "error",
                 msg: "Error al eliminar el producto del carrito"
@@ -103,17 +109,17 @@ class CartManagerDB {
         }
     }
 
-    deleteAllProductsInCart = async (cid) => {
+    async deleteAllProductsInCart(cid) {
         try {
             const cart = await cartsModel.findOne({ _id: cid });
             cart.products.splice(0, cart.products.length);
             await cart.save();
             return {
                 status: "success",
-                msg: cart
+                msg: "Todos los productos han sido eliminados del carrito"
             };
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return {
                 status: "error",
                 msg: "Error al eliminar todos los productos del carrito"
@@ -121,7 +127,7 @@ class CartManagerDB {
         }
     }
 
-    updateCart = async (cid, products) => {
+    async updateCart(cid, products) {
         try {
             const cart = await cartsModel.findOne({ _id: cid });
             cart.products.splice(0, cart.products.length);
@@ -132,7 +138,7 @@ class CartManagerDB {
                 msg: cart
             };
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return {
                 status: "error",
                 msg: "Error al actualizar el carrito"
@@ -140,7 +146,7 @@ class CartManagerDB {
         }
     }
 
-    updateQualityProduct = async (cid, pid, quantity) => {
+    async updateQualityProduct(cid, pid, quantity) {
         try {
             const cart = await cartsModel.findOne({ _id: cid });
             const index = cart.products.findIndex(e => e.product == pid);
@@ -158,7 +164,7 @@ class CartManagerDB {
                 };
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return {
                 status: "error",
                 msg: "Error al actualizar la cantidad del producto en el carrito"
