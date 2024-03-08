@@ -13,15 +13,18 @@ router.get("/", async (req, res) => {
         const filter = category ? { category } : {};
         const products = await productManagerMongo.getProducts(filter, options);
 //La respuesta del endpoint GET /api/products trae el formato con paginacion(posible correccion)
-        if (products.length > 0) {
+//correccion aplicada en after
+const list = products.msg.docs;
+
+        if (list.length > 0) {
             const paginationInfo = {
-                docs: products,
+                docs: list,
                 totalDocs: products.length, 
                 limit: options.limit,
                 page: options.page,
-                totalPages: Math.ceil(products.length / options.limit),
+                totalPages: Math.ceil(list.length / options.limit),
                 hasPrevPage: options.page > 1,
-                hasNextPage: options.page < Math.ceil(products.length / options.limit)
+                hasNextPage: options.page < Math.ceil(list.length / options.limit)
             };
             if (paginationInfo.hasPrevPage) {
                 paginationInfo.prevLink = `http://localhost:8080/api/products?limit=${limit}&page=${options.page - 1}`;

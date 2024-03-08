@@ -48,28 +48,29 @@ class CartManagerDB {
         }
     }
 
-    async addProductInCart(cid, pid, quantity) {
+    async  addProductInCart(cid, pid, quantity) {
         try {
             const cart = await cartsModel.findOne({ _id: cid });
             if (!cart) {
                 return {
                     status: "error",
-                    msg: `El carrito con el id ${cid} no existe`
+                    msg: `El carrito con el ID ${cid} no existe`
                 };
             }
-
             const product = await productsModel.findOne({ _id: pid });
             if (!product) {
                 return {
                     status: "error",
-                    msg: `El producto con el id ${pid} no existe`
+                    msg: `El producto con el ID ${pid} no existe`
                 };
             }
-
-            const index = cart.products.findIndex(e => e.product == pid);
-            if (index !== -1) {
-                cart.products[index].quantity += quantity;
+            // Buscar el producto en el carrito
+            const existingProduct = cart.products.find(e => e.product == pid);
+            if (existingProduct) {
+                // Si existe, actualizar la cantidad
+                existingProduct.quantity += quantity;
             } else {
+                // Si no existe, agregarlo al arreglo de productos del carrito
                 cart.products.push({ product: pid, quantity });
             }
             await cart.save();
@@ -82,7 +83,7 @@ class CartManagerDB {
             };
         }
     }
-
+    
     async deleteProductInCart(cid, pid) {
         try {
             const cart = await cartsModel.findOne({ _id: cid });

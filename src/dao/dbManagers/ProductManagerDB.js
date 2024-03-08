@@ -37,6 +37,7 @@ class ProductManagerDB {
             price,
             code,
             stock,
+            category,
             thumbnail: `http://localhost:8080/images/${filename}`
         }
 
