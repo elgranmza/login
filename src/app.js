@@ -28,7 +28,7 @@ app.use(session({
         mongoUrl:MONGO,
         ttl:3600
 }),
-    secret:"CoderSecret",  
+    secret:"adminCod3r123",  
     resave:false,
     saveUninitialized:false
 }))

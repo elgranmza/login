@@ -49,7 +49,6 @@ router.post("/login", async (req, res) => {
                 error: "Credenciales incorrectas"
             });
         }
-
         req.session.user = {
             first_name: user.first_name,
             last_name: user.last_name,
@@ -57,11 +56,15 @@ router.post("/login", async (req, res) => {
             age: user.age
         };
 
-        res.send({
-            status: "success",
-            payload: req.session.user,
-            message: "¡Inicio de sesión exitoso!"
-        });
+        // Asignar roles de usuario
+        req.session.role = "usuario";
+
+        // Verificar si es administrador
+        if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
+            req.session.role = "admin";
+        }
+
+        res.redirect("/products");
     } catch (error) {
         console.error("Error al iniciar sesión:", error);
         res.status(500).send({
