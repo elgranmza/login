@@ -7,8 +7,13 @@ import viewRouter from "./routes/views.router.js"
 import productsRouter from "./routes/products.router.js"
 import __dirname from "./utils.js"
 import {Server} from "socket.io"
-
 import messagesModel from "./dao/models/messages.model.js";
+import session  from "express-session"
+import MongoStore from "connect-mongo"
+import sessionRouter from "./routes/sessions.router.js"
+
+
+
 
 const PORT = 8080;
 const app = express();
@@ -16,10 +21,17 @@ const app = express();
 const MONGO = "mongodb+srv://elgranmza:mGUlbTxmcEKrrSYs@codercluster.vkyyzkg.mongodb.net/ecommerce"
 const connection = mongoose.connect(MONGO);
 
-
-
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(session({
+    store: new MongoStore({
+        mongoUrl:MONGO,
+        ttl:3600
+}),
+    secret:"CoderSecret",  
+    resave:false,
+    saveUninitialized:false
+}))
 
 const httpServer = app.listen(PORT, ()=>console.log(`Servidor funcionando en el puerto: ${PORT}`))
 console.log("dirname",__dirname)
@@ -35,6 +47,7 @@ app.use(express.static(__dirname + "/public"))
 app.use("/api/carts",cartsRouter);
 app.use("/api/products",productsRouter);
 app.use("/api/users",usersRouter)
+app.use("/api/sessions", sessionRouter)
 app.use("/",viewRouter)
 
 //websocket

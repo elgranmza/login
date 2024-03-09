@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique:true
     },
-    thumbnail:String
+    age:Number,
+    password:String
 })
 
 const userModel = mongoose.model(collection,userSchema)

@@ -1,21 +1,29 @@
 <div>
-    <form action="/api/user" enctype="multipart/form-data" method="post">
+    <h1>REGISTRO</h1>
+    <form id="registerForm">
         <div>
             <label>Nombre</label>
-            <input name ="first_name" id="first_name">
+            <input name ="first_name">
         </div>
         <div>
             <label>Apellido</label>
-            <input name ="last_name" id="last_name">
+            <input name ="last_name">
         </div>
         <div>
             <label>Email</label>
-            <input name ="email" id="email">
+            <input name ="email">
         </div>
         <div>
-            <label>Imagen</label>
-            <input type="file" name="thumbnail" id="thumbnail">
+            <label>Edad</label>
+            <input name ="age" >
+        </div>
+        <div>
+            <label>Contraseña</label>
+            <input name ="password" type="password">
         </div>
         <input type="submit" value="Submit">
     </form>
+    <p>¿Ya tienes cuenta? <a href="/login">Ingresa aquí</a></p>
 </div>
+
+<script src="/js/register.js"></script>
