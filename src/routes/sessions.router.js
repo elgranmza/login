@@ -62,6 +62,7 @@ router.post("/login", async (req, res) => {
         // Verificar si es administrador
         if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
             req.session.role = "admin";
+            return res.redirect("/products?message=Hola%20admin");
         }
 
         res.redirect("/products");
